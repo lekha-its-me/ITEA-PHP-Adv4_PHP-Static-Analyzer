@@ -1,17 +1,17 @@
 {
-  "name": "greeflas/php-static-analyzer",
+  "name": "lekha-its-me/php-static-analyzer",
   "description": "",
   "type": "project",
   "license": "BSD-3-Clause",
   "authors": [
     {
-      "name": "Vladimir Kuprienko",
-      "email": "vldmr.kuprienko@gmail.com"
+      "name": "Alexey Baranov",
+      "email": "lekha.baranov@gmail.com"
     }
   ],
   "minimum-stability": "stable",
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.1",
     "symfony/console": "^4.2",
     "symfony/finder": "^4.2",
     "phpdocumentor/reflection-docblock": "^4.3"
