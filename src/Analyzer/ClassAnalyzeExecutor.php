@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the "default-project" package.
+ *
+ * (c) Vladimir Kuprienko <vldmr.kuprienko@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Greeflas\StaticAnalyzer\Analyzer;
 
 /**
@@ -16,6 +25,7 @@ final class ClassAnalyzeExecutor
 
     /**
      * ClassAnalyzeExecutor constructor.
+     *
      * @param string $fullClassName
      */
     public function __construct(string $fullClassName)
@@ -25,20 +35,16 @@ final class ClassAnalyzeExecutor
 
     /**
      * @param \ReflectionClass $reflector object of class ReflectionClass
+     *
      * @return string get name of class
      */
     private function getClassInfo(\ReflectionClass $reflector): string
     {
-        if ($reflector->isAbstract())
-        {
+        if ($reflector->isAbstract()) {
             $classType = 'abstract';
-        }
-        elseif ($reflector->isFinal())
-        {
+        } elseif ($reflector->isFinal()) {
             $classType = 'final';
-        }
-        else
-        {
+        } else {
             $classType = 'default';
         }
 
@@ -47,6 +53,7 @@ final class ClassAnalyzeExecutor
 
     /**
      * @param \ReflectionClass $reflector
+     *
      * @return array get count information about methods of class
      */
     private function getClassPropertiesInfo(\ReflectionClass $reflector): array
@@ -60,44 +67,38 @@ final class ClassAnalyzeExecutor
         $propPrivateStaticCount = 0;
         $propertiesCountArray = [];
 
-        foreach ($properties as $property)
-        {
-            if ($property->isPublic())
-            {
+        foreach ($properties as $property) {
+            if ($property->isPublic()) {
                 $propPublicCount++;
-                if ($property->isStatic())
-                {
+
+                if ($property->isStatic()) {
                     $propPublicStaticCount++;
                 }
-            }
-            elseif ($property->isProtected())
-            {
+            } elseif ($property->isProtected()) {
                 $propProtectedCount++;
-                if ($property->isStatic())
-                {
+
+                if ($property->isStatic()) {
                     $propProtectedStaticCount++;
                 }
-            }
-            elseif ($property->isPrivate())
-            {
+            } elseif ($property->isPrivate()) {
                 $propPrivateCount++;
-                if ($property->isStatic())
-                {
+
+                if ($property->isStatic()) {
                     $propPrivateStaticCount++;
                 }
             }
         }
         $propertiesCountArray['public'] = [
            'count' =>  $propPublicCount,
-           'countStatic' =>  $propPublicStaticCount
+           'countStatic' =>  $propPublicStaticCount,
         ];
         $propertiesCountArray['protected'] = [
             'count' =>  $propProtectedCount,
-            'countStatic' =>  $propProtectedStaticCount
+            'countStatic' =>  $propProtectedStaticCount,
         ];
         $propertiesCountArray['private'] = [
             'count' =>  $propPrivateCount,
-            'countStatic' =>  $propPrivateStaticCount
+            'countStatic' =>  $propPrivateStaticCount,
         ];
 
         return $propertiesCountArray;
@@ -105,6 +106,7 @@ final class ClassAnalyzeExecutor
 
     /**
      * @param \ReflectionClass $reflector
+     *
      * @return array count information about class methods
      */
     private function getClassMethodsInfo(\ReflectionClass $reflector): array
@@ -118,44 +120,38 @@ final class ClassAnalyzeExecutor
         $methodsPrivateStaticCount = 0;
         $methodsCountArray = [];
 
-        foreach ($properties as $property)
-        {
-            if ($property->isPublic())
-            {
+        foreach ($properties as $property) {
+            if ($property->isPublic()) {
                 $methodsPublicCount++;
-                if ($property->isStatic())
-                {
+
+                if ($property->isStatic()) {
                     $methodsPublicStaticCount++;
                 }
-            }
-            elseif ($property->isProtected())
-            {
+            } elseif ($property->isProtected()) {
                 $methodsProtectedCount++;
-                if ($property->isStatic())
-                {
+
+                if ($property->isStatic()) {
                     $methodsProtectedStaticCount++;
                 }
-            }
-            elseif ($property->isPrivate())
-            {
+            } elseif ($property->isPrivate()) {
                 $methodsPrivateCount++;
-                if ($property->isStatic())
-                {
+
+                if ($property->isStatic()) {
                     $methodsPrivateStaticCount++;
                 }
             }
         }
         $methodsCountArray['public'] = [
             'count' =>  $methodsPublicCount,
-            'countStatic' =>  $methodsPublicStaticCount
+            'countStatic' =>  $methodsPublicStaticCount,
         ];
         $methodsCountArray['protected'] = [
             'count' =>  $methodsProtectedCount,
-            'countStatic' =>  $methodsProtectedStaticCount
+            'countStatic' =>  $methodsProtectedStaticCount,
         ];
         $methodsCountArray['private'] = [
             'count' =>  $methodsPrivateCount,
-            'countStatic' =>  $methodsPrivateStaticCount
+            'countStatic' =>  $methodsPrivateStaticCount,
         ];
 
         return $methodsCountArray;
@@ -173,7 +169,6 @@ final class ClassAnalyzeExecutor
         try {
             $reflector = new \ReflectionClass($this->fullClassName);
         } catch (\ReflectionException $e) {
-
         }
 
         $result['className'] = $reflector->getName();
