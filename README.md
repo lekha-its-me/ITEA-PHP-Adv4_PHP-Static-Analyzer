@@ -14,6 +14,8 @@ Usage
 `$ ./bin/console class-author-stat <projectDir> <developerEmail>` - counts classes/interfaces/trait
 created by some developer in project.
 
+`$ ./bin/console class-author-stat <fullClassName>` - get information about class, count properties and methods
+
 Code style fixer
 ----------------
 
