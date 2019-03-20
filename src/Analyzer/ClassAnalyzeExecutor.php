@@ -11,26 +11,31 @@
 
 namespace Greeflas\StaticAnalyzer\Analyzer;
 
+use Greeflas\StaticAnalyzer\Command\ClassAnalyze;
+use Greeflas\StaticAnalyzer\Helpers\ClassAnalyzeResult;
+use Greeflas\StaticAnalyzer\Helpers\ClassMethods;
+use Greeflas\StaticAnalyzer\Helpers\ClassProperties;
+
 /**
- *
+ * Class for analizyng information about giving class
  *
  * @author Alexey Baranov <lekha.baranov@gmail.com>
  */
 final class ClassAnalyzeExecutor
 {
+    const ABSTRACT_CLASS = 'abstract';
+    const FINAL_CLASS = 'final';
+    const DEFAULT_CLASS = 'default';
+
     /**
      * @var string fullname of class about which we need get info
      */
-    private $fullClassName;
+    private $reflection;
 
-    /**
-     * ClassAnalyzeExecutor constructor.
-     *
-     * @param string $fullClassName
-     */
+
     public function __construct(string $fullClassName)
     {
-        $this->fullClassName = $fullClassName;
+        $this->reflection = $reflector = new \ReflectionClass($fullClassName);
     }
 
     /**
@@ -38,34 +43,34 @@ final class ClassAnalyzeExecutor
      *
      * @return string get name of class
      */
-    private function getClassInfo(\ReflectionClass $reflector): string
+    private function getClassInfo(): string
     {
-        if ($reflector->isAbstract()) {
-            $classType = 'abstract';
-        } elseif ($reflector->isFinal()) {
-            $classType = 'final';
+        if ($this->reflection->isAbstract()) {
+            $classType = self::ABSTRACT_CLASS;
+        } elseif ($this->reflection->isFinal()) {
+            $classType = self::FINAL_CLASS;
         } else {
-            $classType = 'default';
+            $classType = self::DEFAULT_CLASS;
         }
 
         return $classType;
     }
 
     /**
-     * @param \ReflectionClass $reflector
+     * Get count information about properties of class
      *
-     * @return array get count information about methods of class
+     * @return ClassProperties
      */
-    private function getClassPropertiesInfo(\ReflectionClass $reflector): array
+    private function getClassPropertiesInfo(): ClassProperties
     {
-        $properties = $reflector->getProperties();
+        $properties = $this->reflection->getProperties();
         $propPublicCount = 0;
         $propProtectedCount = 0;
         $propPrivateCount = 0;
         $propPublicStaticCount = 0;
         $propProtectedStaticCount = 0;
         $propPrivateStaticCount = 0;
-        $propertiesCountArray = [];
+        $propertiesCountObject = new ClassProperties();
 
         foreach ($properties as $property) {
             if ($property->isPublic()) {
@@ -88,37 +93,32 @@ final class ClassAnalyzeExecutor
                 }
             }
         }
-        $propertiesCountArray['public'] = [
-           'count' =>  $propPublicCount,
-           'countStatic' =>  $propPublicStaticCount,
-        ];
-        $propertiesCountArray['protected'] = [
-            'count' =>  $propProtectedCount,
-            'countStatic' =>  $propProtectedStaticCount,
-        ];
-        $propertiesCountArray['private'] = [
-            'count' =>  $propPrivateCount,
-            'countStatic' =>  $propPrivateStaticCount,
-        ];
 
-        return $propertiesCountArray;
+        $propertiesCountObject->propPrivate = $propPrivateCount;
+        $propertiesCountObject->propPrivateStatic = $propPrivateStaticCount;
+        $propertiesCountObject->propProtected = $propProtectedCount;
+        $propertiesCountObject->propProtectedStatic = $propProtectedStaticCount;
+        $propertiesCountObject->propPublic = $propPublicCount;
+        $propertiesCountObject->propPublicStatic = $propPublicStaticCount;
+
+        return $propertiesCountObject;
     }
 
     /**
-     * @param \ReflectionClass $reflector
+     * Get count information about class methods
      *
-     * @return array count information about class methods
+     * @return ClassMethods
      */
-    private function getClassMethodsInfo(\ReflectionClass $reflector): array
+    private function getClassMethodsInfo(): ClassMethods
     {
-        $properties = $reflector->getMethods();
+        $properties = $this->reflection->getMethods();
         $methodsPublicCount = 0;
         $methodsProtectedCount = 0;
         $methodsPrivateCount = 0;
         $methodsPublicStaticCount = 0;
         $methodsProtectedStaticCount = 0;
         $methodsPrivateStaticCount = 0;
-        $methodsCountArray = [];
+        $methodsCountObject = new ClassMethods();
 
         foreach ($properties as $property) {
             if ($property->isPublic()) {
@@ -141,40 +141,31 @@ final class ClassAnalyzeExecutor
                 }
             }
         }
-        $methodsCountArray['public'] = [
-            'count' =>  $methodsPublicCount,
-            'countStatic' =>  $methodsPublicStaticCount,
-        ];
-        $methodsCountArray['protected'] = [
-            'count' =>  $methodsProtectedCount,
-            'countStatic' =>  $methodsProtectedStaticCount,
-        ];
-        $methodsCountArray['private'] = [
-            'count' =>  $methodsPrivateCount,
-            'countStatic' =>  $methodsPrivateStaticCount,
-        ];
 
-        return $methodsCountArray;
+        $methodsCountObject->methodPrivate = $methodsPrivateCount;
+        $methodsCountObject->methodPrivateStatic = $methodsPrivateStaticCount;
+        $methodsCountObject->methodProtected = $methodsProtectedCount;
+        $methodsCountObject->methodProtectedStatic = $methodsProtectedStaticCount;
+        $methodsCountObject->methodPublic = $methodsPublicCount;
+        $methodsCountObject->methodPublicStatic = $methodsPublicStaticCount;
+
+        return $methodsCountObject;
     }
 
     /**
      *
-     * Main maethods, which analyze class information
+     * Main methods, which analyze class information
      *
-     * @return array
+     * @return ClassAnalyzeResult
      */
-    public function analyze(): array
+    public function analyze(): ClassAnalyzeResult
     {
-        $result = [];
-        try {
-            $reflector = new \ReflectionClass($this->fullClassName);
-        } catch (\ReflectionException $e) {
-        }
+        $result = new ClassAnalyzeResult();
 
-        $result['className'] = $reflector->getName();
-        $result['classType'] = self::getClassInfo($reflector);
-        $result['classProperties'] = self::getClassPropertiesInfo($reflector);
-        $result['classMethods'] = self::getClassMethodsInfo($reflector);
+        $result->className = $this->reflection->getName();
+        $result->classType = $this->getClassInfo();
+        $result->classProperties = $this->getClassPropertiesInfo();
+        $result->classMethods = $this->getClassMethodsInfo();
 
         return $result;
     }

@@ -1,12 +1,12 @@
 {
-  "name": "lekha-its-me/php-static-analyzer",
+  "name": "greeflas/php-static-analyzer",
   "description": "",
   "type": "project",
   "license": "BSD-3-Clause",
   "authors": [
     {
-      "name": "Alexey Baranov",
-      "email": "lekha.baranov@gmail.com"
+      "name": "Vladimir Kuprienko",
+      "email": "vldmr.kuprienko@gmail.com"
     }
   ],
   "minimum-stability": "stable",
