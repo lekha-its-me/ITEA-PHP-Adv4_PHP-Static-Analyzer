@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Alexey Baranov <lekha.baranov@gmail.com>
  */
-class ClassAnalyze extends Command
+class ClassAnalyzeCommand extends Command
 {
     protected function configure()
     {

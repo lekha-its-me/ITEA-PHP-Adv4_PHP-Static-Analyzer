@@ -11,7 +11,6 @@
 
 namespace Greeflas\StaticAnalyzer\Analyzer;
 
-use Greeflas\StaticAnalyzer\Command\ClassAnalyze;
 use Greeflas\StaticAnalyzer\Helpers\ClassAnalyzeResult;
 use Greeflas\StaticAnalyzer\Helpers\ClassMethods;
 use Greeflas\StaticAnalyzer\Helpers\ClassProperties;
